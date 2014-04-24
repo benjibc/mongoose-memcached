@@ -1,0 +1,31 @@
+{
+  "name": "mongoose-memcached",
+  "description": "Cache mongoose queries in memcached.",
+  "author": "Yufei (Benny) Chen <benny.yufei.chen@gmail.com>",
+  "version": "0.1.0",
+  "main": "index.js",
+  "keywords": [
+    "plugin",
+    "mongoose",
+    "query",
+    "cache",
+    "data",
+    "mongo",
+    "mongodb",
+    "memcached",
+    "memory",
+    "ttl"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha ./test/test.js"
+  },
+  "dependencies": {
+    "mongoose": "3.8.*",
+    "memcached": "*"
+  },
+  "devDependencies": {
+    "expect.js": "*",
+    "mocha": "*"
+  }
+}
