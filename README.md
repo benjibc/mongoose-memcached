@@ -42,7 +42,7 @@ Person.find({ active: true })
 
 More documentation for .cache and .ttl will be coming up. For now, check the test cases and the source code for advanced usage
 
-License
+# License
 
 (The MIT License)
 

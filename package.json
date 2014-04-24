@@ -2,8 +2,12 @@
   "name": "mongoose-memcached",
   "description": "Cache mongoose queries in memcached.",
   "author": "Yufei (Benny) Chen <benny.yufei.chen@gmail.com>",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/benjibc/mongoose-memcached.git"
+  },
   "keywords": [
     "plugin",
     "mongoose",
