@@ -31,8 +31,7 @@ You can also enable caching programatically by using the `cache` method directly
 var Person = mongoose.model('Person');
 
 Person.find({ active: true })
-.cache(true)  // enable cache 
-.ttl(50)      // cache for 50 seconds 
+.cache(true, 50)  // enable cache, for 50 seconds 
 .exec(function (err, docs) { /* ... */
   if (err) throw error;
   console.log(docs);
@@ -40,7 +39,40 @@ Person.find({ active: true })
 
 ```
 
-More documentation for .cache and .ttl will be coming up. For now, check the test cases and the source code for advanced usage
+#API
+
+## public methods
+
+``` javascript
+Query.prototype.cache(cache, ttl, key)
+```
+* `cache`: **String** whether to enable or disable the cache 
+* `ttl`: **Number** After how long should the key expire measured in `seconds`
+* `key`: **Function** the identifier associated with the cache
+* return:**Query** the Query object itself, which means you can chain the calls
+
+all parameters are optional. If `cache` is undefined, it is defaulted to true. If `ttl` is undefined, the time to live is set to ttl defined when the library is initialized. When the key is not defined, it will be generated based on an internal key generating function, `genKeyFromQuery`. Check the documentation if you want to see exactly how the key is generated   
+
+``` javascript
+Query.prototype.isFromCache()
+```
+* return : **Boolean** whether the current queried data is from cache
+
+``` javascript
+Query.prototype.isCacheEnabled()
+```
+* return : **Boolean** whether the current queried will use cache 
+
+``` javascript
+mongooseMemcached(mongoose, options);
+```
+Initialize the plugin on mongoose. The field you can set in options are
+* `ttl`: **Number** After how long should the key expire measured in `seconds`. Default: 60 seconds
+* `cache`: **Boolean** enable cache globally by default. Default: false
+* `memServer`: **String** the memcached server address. Default: 'localhost:11211' 
+* `memOptions`: **Object** options to use for memcached server. The library relies on `node-memcached`, and will pass the option to the library directly. Default: null
+* genKey: **Function** function for key genration. Default: `genKeyFromQuery`
+
 
 # License
 

@@ -72,9 +72,11 @@ describe('mongoose-memcached', function() {
   afterEach(function(done){
     People.remove(done);
   });  
+
   it('should have `cache` method', function () {
     expect(People.find({}).cache).to.be.a('function');
   });
+
   it('should not cache query if .cache method is not called', function (done) {
     var query = People.find({});
     query.exec(function (err, docs) {
@@ -92,10 +94,11 @@ describe('mongoose-memcached', function() {
       });
     });
   });
+
   it('should cache query if the `cache` method is called', function (done) {
     var self = this;
     var query = People.find({});
-    query.cache(true, 1).exec(function (err, docs) {
+    query.cache(true, 2).exec(function (err, docs) {
       var time = Date.now();
       if (err) {
         return done(err);
@@ -107,9 +110,9 @@ describe('mongoose-memcached', function() {
         People.find({}).exec(function (err, docs) {
           if (err) {
             return done(err);
-          }
-          People.find({}).exec(function (err, docs) {
-            if (err) {
+}
+People.find({}).exec(function (err, docs) {
+if (err) {
               return done(err);
             }
             People.find({}).exec(function (err, docs) {
@@ -133,20 +136,28 @@ describe('mongoose-memcached', function() {
       });
     });
   });
+
   it('should work with lean enabled', function (done) {
     var query = People.find({});
     query.lean().cache().exec(function (err, docs) {
       if (err) {
         return done(err);
       }
-      query = People.find({}).lean().cache().exec(function (err, docs) {
-        if (err) {
+      generate(5, function(e) {
+        if(e) {
           return done(err);
         }
-        if (docs) {
-          expect(query.isFromCache).to.be(true);
-          done();
-        }
+        query = People.find({}).lean().cache().exec(function (err, docs) {
+          if (err) {
+            return done(err);
+          }
+          if (docs) {
+            expect(query.isFromCache).to.be(true);
+            // length should be 10 instead of 15 because these are cached docs
+            expect(docs).to.have.length(10);
+            done();
+          }
+        });
       });
     });
   });
@@ -158,7 +169,8 @@ describe('mongoose-memcached', function() {
         return done(err);
       }
       expect(query._ttl).to.be(50);
-      expect(query.isFromCache).to.be(true);
+      // first time query, should not be from cache
+      expect(query.isFromCache).to.be(false);
       query = People.find({}).cache(true, 40).exec(function (err, docs) {
         if (err) {
           return done(err);
@@ -178,15 +190,19 @@ describe('mongoose-memcached', function() {
       if (err) {
         return done(err);
       }
-      query = People.find({});
-      query.cache(false).exec(function (err, docs) {
-        if (err) {
-          return done(err);
+      generate(5, function(e) {
+        if(e) {
+          return done(e);
         }
-        if (docs) {
+        query = People.find({});
+        query.cache(false).exec(function (err, docs) {
+          if (err) {
+            return done(err);
+          }
           expect(query.isFromCache).to.be(false);
+          expect(docs).to.have.length(15);
           done();
-        }
+        });
       });
     });
   });
