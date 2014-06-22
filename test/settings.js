@@ -1,4 +1,7 @@
 'use strict';
+/**
+ * This file tests mongoose-memcached under different settings
+ */
 
 var Memcached = require('memcached'); 
 var mongooseMemcached = require('../'),
@@ -16,7 +19,7 @@ var mongooseMemcached = require('../'),
     db;
 
 
-describe('mongoose-memcached', function() {
+describe('mongoose-memcached with cache turned on by default', function() {
   before(function(done) {
     // connecting to mongoose
     mongoose.connect('mongodb://127.0.0.1/mongoose-cachebox-testing');
@@ -31,7 +34,7 @@ describe('mongoose-memcached', function() {
 
     // adding mongoose cachebox
     // I set the port on 11212 because of old habit.
-    mongooseMemcached(mongoose, {memServers: "localhost:11212"});
+    mongooseMemcached(mongoose, {memServers: "localhost:11212", cache: true});
     _memcached = new Memcached('localhost:11212');
     PeopleSchema = new Schema({
       name: String,
@@ -60,7 +63,7 @@ describe('mongoose-memcached', function() {
   }
 
 
-  beforeEach(function(done){
+  beforeEach(function(done) {
     _memcached.flush(function(e) {
       if(e) {
         return done(e);
@@ -77,7 +80,8 @@ describe('mongoose-memcached', function() {
     expect(People.find({}).cache).to.be.a('function');
   });
 
-  it('should not cache query if .cache method is not called', function (done) {
+  it('should cache query even if .cache method is not called', function (done) {
+    console.log('should be cached by default in this case');
     var query = People.find({});
     query.exec(function (err, docs) {
       if (err) {
@@ -89,7 +93,7 @@ describe('mongoose-memcached', function() {
           return done(err);
         }
         if (docs) {
-          expect(query.isFromCache).to.be(false);
+          expect(query.isFromCache).to.be(true);
           done();
         }
       });

@@ -22,7 +22,7 @@
   ],
   "license": "MIT",
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha ./test/test.js"
+    "test": "sh test/test.sh"
   },
   "dependencies": {
     "mongoose": "3.8.*",
