@@ -138,6 +138,66 @@ describe('mongoose-memcached', function() {
     });
   });
 
+  it('should not cache a stream query if the `cache` method is not called', function (done) {
+    function createStreamQuery (cb) {
+        var query = People.find({}),
+            stream = query.stream(),
+            arr = [];
+        
+        stream.on('error', function (err) { done(err); });
+        stream.on('data', function (data) { 
+            arr.push(data.toObject());
+            expect(data).to.be.ok();        
+        });
+
+        stream.on('close', function () {
+            cb(arr);
+        });
+        
+        return query;
+    }
+    
+    var query0, query1;
+    query0 = createStreamQuery(function (arr0) {
+        expect(query0.isFromCache).to.be(false);
+        query1 = createStreamQuery(function (arr1) {
+            expect(query1.isFromCache).to.be(false);
+            expect(arr0).to.eql(arr1);
+            done();
+        });
+    })
+  });
+    
+  it('should cache a stream query if the `cache` method is called', function (done) {
+    function createStreamQuery (cb) {
+        var query = People.find({}),
+            stream = query.cache(true, 2).stream(),
+            arr = [];
+        
+        stream.on('error', function (err) { done(err); });
+        stream.on('data', function (data) { 
+            arr.push(data.toObject());
+            expect(data).to.be.ok();        
+        });
+
+        stream.on('close', function () {
+            cb(arr);
+        });
+        
+        return query;
+    }
+    
+    var query0, query1;
+    query0 = createStreamQuery(function (arr0) {
+        expect(query0.isFromCache).to.be(false);
+        query1 = createStreamQuery(function (arr1) {
+            expect(query1.isFromCache).to.be(true);
+            expect(arr0).to.eql(arr1);
+            done();
+        });
+    })
+  });
+    
   it('should work with lean enabled', function (done) {
     var query = People.find({});
     query.lean().cache().exec(function (err, docs) {
