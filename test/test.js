@@ -137,7 +137,7 @@ describe('mongoose-memcached', function() {
       });
     });
   });
-
+  
   it('should not cache a stream query if the `cache` method is not called', function (done) {
     function createStreamQuery (cb) {
         var query = People.find({}),
@@ -166,7 +166,7 @@ describe('mongoose-memcached', function() {
       });
     })
   });
-    
+  
   it('should cache a stream query if the `cache` method is called', function (done) {
     function createStreamQuery (cb) {
         var query = People.find({}),
