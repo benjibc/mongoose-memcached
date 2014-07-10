@@ -1,7 +1,6 @@
 'use strict';
 
-var Memcached = require('memcached'),
-    Stream = require('stream'); 
+var Memcached = require('memcached'); 
 var mongooseMemcached = require('../'),
     mongoose = require('mongoose'),
     Schema = mongoose.Schema,
