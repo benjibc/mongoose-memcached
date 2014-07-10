@@ -1,6 +1,7 @@
 'use strict';
 
-var Memcached = require('memcached'); 
+var Memcached = require('memcached'),
+    Stream = require('stream'); 
 var mongooseMemcached = require('../'),
     mongoose = require('mongoose'),
     Schema = mongoose.Schema,
@@ -144,27 +145,26 @@ describe('mongoose-memcached', function() {
             stream = query.stream(),
             arr = [];
         
-        stream.on('error', function (err) { done(err); });
-        stream.on('data', function (data) { 
+        stream
+          .on('error', function (err) { done(err); })
+          .on('data', function (data) { 
             arr.push(data.toObject());
             expect(data).to.be.ok();        
-        });
-
-        stream.on('close', function () {
-            cb(arr);
-        });
+          })
+          .on('close', function () { cb(arr); });
         
+        expect(stream.pipe).to.be.a('function');
         return query;
     }
     
     var query0, query1;
     query0 = createStreamQuery(function (arr0) {
-        expect(query0.isFromCache).to.be(false);
-        query1 = createStreamQuery(function (arr1) {
-            expect(query1.isFromCache).to.be(false);
-            expect(arr0).to.eql(arr1);
-            done();
-        });
+      expect(query0.isFromCache).to.be(false);
+      query1 = createStreamQuery(function (arr1) {
+        expect(query1.isFromCache).to.be(false);
+        expect(arr0).to.eql(arr1);
+        done();
+      });
     })
   });
     
@@ -174,27 +174,26 @@ describe('mongoose-memcached', function() {
             stream = query.cache(true, 2).stream(),
             arr = [];
         
-        stream.on('error', function (err) { done(err); });
-        stream.on('data', function (data) { 
+        stream
+          .on('error', function (err) { done(err); })
+          .on('data', function (data) { 
             arr.push(data.toObject());
             expect(data).to.be.ok();        
-        });
-
-        stream.on('close', function () {
-            cb(arr);
-        });
+          })
+          .on('close', function () { cb(arr); });
         
+        expect(stream.pipe).to.be.a('function');
         return query;
     }
     
     var query0, query1;
     query0 = createStreamQuery(function (arr0) {
-        expect(query0.isFromCache).to.be(false);
-        query1 = createStreamQuery(function (arr1) {
-            expect(query1.isFromCache).to.be(true);
-            expect(arr0).to.eql(arr1);
-            done();
-        });
+      expect(query0.isFromCache).to.be(false);
+      query1 = createStreamQuery(function (arr1) {
+        expect(query1.isFromCache).to.be(true);
+        expect(arr0).to.eql(arr1);
+        done();
+      });
     })
   });
     
