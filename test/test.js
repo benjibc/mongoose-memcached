@@ -120,6 +120,7 @@ describe('mongoose-memcached', function() {
               if (err) {
                 return done(err);
               }
+              var docsOrg = docs.map(function (doc) { return doc.toObject(); });
               query = People.find({}).cache().exec(function (err, docs) {
                 if (err) {
                   return done(err);
@@ -128,6 +129,8 @@ describe('mongoose-memcached', function() {
                   time = Date.now() - time;
                   expect(docs).to.be.ok();
                   expect(query.isFromCache).to.be(true);
+                  expect(docs[0].save).to.be.a('function');
+                  expect(docsOrg).to.eql(docs.map(function (doc) { return doc.toObject(); }));
                   done();
                 }
               });
@@ -257,6 +260,7 @@ describe('mongoose-memcached', function() {
             expect(query.isFromCache).to.be(true);
             // length should be 10 instead of 15 because these are cached docs
             expect(docs).to.have.length(10);
+            expect(docs[0].save).to.be(undefined);
             done();
           }
         });
