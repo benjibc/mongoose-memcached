@@ -26,7 +26,8 @@
   },
   "dependencies": {
     "mongoose": "3.8.*",
-    "memcached": "*"
+    "memcached": "*",
+    "mpromise": "0.5.*"
   },
   "devDependencies": {
     "expect.js": "*",
