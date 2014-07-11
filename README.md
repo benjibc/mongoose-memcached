@@ -23,7 +23,7 @@ var options = {
 mongooseMemcached(mongoose, options);
 ```
 
-Then later any `find` query will be cached for 60 seconds.
+Then later any `find` or `findOne` query will be cached for 60 seconds.
 
 You can also enable caching programatically by using the `cache` method directly from the query instance:
 
