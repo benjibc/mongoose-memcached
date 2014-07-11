@@ -137,6 +137,49 @@ describe('mongoose-memcached', function() {
       });
     });
   });
+    
+  it('should cache findOne query if the `cache` method is called', function (done) {
+    var self = this;
+    var query = People.findOne({});
+    query.cache(true, 2).exec(function (err, docs) {
+      expect(query.isFromCache).to.be(false);
+      var time = Date.now();
+      if (err) {
+        return done(err);
+      }
+      People.findOne({}).exec(function (err, docs) {
+        if (err) {
+          return done(err);
+        }
+        People.findOne({}).exec(function (err, docs) {
+          if (err) {
+            return done(err);
+          }
+          People.findOne({}).exec(function (err, docs) {
+          if (err) {
+              return done(err);
+            }
+            People.findOne({}).exec(function (err, docs) {
+              if (err) {
+                return done(err);
+              }
+              query = People.findOne({}).cache().exec(function (err, docs) {
+                if (err) {
+                  return done(err);
+                }
+                if (docs) {
+                  time = Date.now() - time;
+                  expect(docs).to.be.ok();
+                  expect(query.isFromCache).to.be(true);
+                  done();
+                }
+              });
+            });
+          });
+        });
+      });
+    });
+  });
   
   it('should not cache a stream query if the `cache` method is not called', function (done) {
     function createStreamQuery (cb) {
