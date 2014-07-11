@@ -1,6 +1,6 @@
 # mongoose memcached 
 
-Use memcached as the query cacher for mongoose. Inspired by Jonathan Brumley's mongoose-cachebox, but compatible with mongoose 3.8 and uses memcached instead of redis. The API is very similar.
+Use memcached as the query cacher for mongoose. Inspired by Jonathan Brumley's mongoose-cachebox, but compatible with mongoose 3.8 and uses memcached instead of redis. The API is very similar. Credits to https://github.com/Faleij for all the features related to stream query.
 
 ## Instalation
 
